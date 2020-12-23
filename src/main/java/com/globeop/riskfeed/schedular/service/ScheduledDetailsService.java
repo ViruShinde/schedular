@@ -32,15 +32,6 @@ public class ScheduledDetailsService implements CommonService<ScheduledDetails> 
 	private ScheduledDetailsRepository theScheduledDetailsRepository;
 	
 	@Autowired
-	private ClientRepository theClientRepository;
-	
-	@Autowired
-	private FundTableRepository theFundTableRepository; 
-	
-	@Autowired
-	private RiskAggregatorRepository theRiskAggregatorRepository; 
-	
-	@Autowired
 	private ScheduleTaskService theScheduleTaskService;
 	
 	
@@ -106,7 +97,6 @@ public class ScheduledDetailsService implements CommonService<ScheduledDetails> 
 */
 	
 	public ResponseDto addDetails(ScheduledDetails scheduledDetails) {
-		System.out.println("@@@@@@@@@@ "+scheduledDetails);
 		scheduledDetails.setModified_date(LocalDate.now());
 		ScheduledDetails scDetails = theScheduledDetailsRepository.save(scheduledDetails);		
 		System.out.println(">>>> "+scheduledDetails.getScheduledDetailsId());			
@@ -123,8 +113,7 @@ public class ScheduledDetailsService implements CommonService<ScheduledDetails> 
 public ResponseDto updateDetails(ScheduledDetails scheduledDetails) {
 		
 		ScheduledDetails scDetails = theScheduledDetailsRepository.save(scheduledDetails);
-		theScheduleTaskService.addToSpringScheduler(scheduledDetails);		
-		System.out.println(">>>> "+scheduledDetails.getScheduledDetailsId());			
+		theScheduleTaskService.addToSpringScheduler(scheduledDetails);						
 		ResponseDto responseDto= new ResponseDto();    	
     	if(scDetails!=null) {
     		responseDto.setError("False");
@@ -180,10 +169,10 @@ public ResponseDto updateDetails(ScheduledDetails scheduledDetails) {
 		    
 	}
 	
-	public Page<SchedularDto> getscheduledetailsSearch(String keyword) {	
+	public Page<SchedularDto> getscheduledetailsSearch(String keyword,int noOfRecords) {	
 		Sort sort = "ASC".equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by("scheduledDetailsId").ascending() :
 			Sort.by("scheduledDetailsId").descending();		
-		Pageable pageable = PageRequest.of(0, 5, sort);
+		Pageable pageable = PageRequest.of(0, noOfRecords, sort);
 		
 		//System.out.println("@@@ "+theScheduledDetailsRepository.getscheduledetailsSearch(keyword));
 		return this.theScheduledDetailsRepository.getscheduledetailsSearch(keyword, pageable);
