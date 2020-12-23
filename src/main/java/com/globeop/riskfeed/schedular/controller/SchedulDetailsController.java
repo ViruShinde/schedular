@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,17 +71,21 @@ public class SchedulDetailsController {
 		public Page<SchedularDto> findPaginated(@PathVariable (value = "pageNo") int pageNo, 
 				@RequestParam("sortField") String sortField,
 				@RequestParam("sortDir") String sortDir, String id,
+				@RequestParam (value="records", required=false, defaultValue="5") String records,
 				Model model) {
-			int noOfRecordPerPage = 5;
+			int noOfRecordPerPage = Integer.parseInt(records);
 			
 			Page<SchedularDto> page = theScheduledDetailsService.findPaginated(id,pageNo, noOfRecordPerPage, sortField, sortDir);			
 			return page;
 		}
 	 
-	 @GetMapping("/getscheduledetails/search")
-		public Page<SchedularDto> search( @Param("keyword") String keyword, Model model) {
-		 //System.out.println("Search "+keyword);
-		 Page<SchedularDto> test = theScheduledDetailsService.getscheduledetailsSearch(keyword);
+	 	//@GetMapping("/getscheduledetails/search/")
+		//public Page<SchedularDto> search( @Param("keyword") String keyword, @Param("records") String noOfRecords, Model model) {
+	 @RequestMapping("/getscheduledetails/search/")
+	 public Page<SchedularDto> search( @RequestParam (value="keyword", required=false, defaultValue="") String keyword, @RequestParam (value="records", required=false, defaultValue="5") String noOfRecords, Model model) {	
+		 //System.out.println("Search "+keyword);		 
+		 int no=Integer.parseInt(noOfRecords);
+		 Page<SchedularDto> test = theScheduledDetailsService.getscheduledetailsSearch(keyword,no);
 		 //System.out.println(test.getContent());
 		 return test;
 		 //return null;
